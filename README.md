@@ -2,7 +2,7 @@ A Small package for big usage
 A Simple package that gives great scrolling and loading items experience for users.
 which is called: Lazy loading, Load on scroll, pagination, infinity scroll etc.
 
-[flutter lazy loading](https://miro.medium.com/v2/resize:fit:288/format:webp/1*RuY95009B8Kcg1tKrVgMiA.gif)
+![flutter lazy loading](https://miro.medium.com/v2/resize:fit:288/format:webp/1*RuY95009B8Kcg1tKrVgMiA.gif)
 
 ## Features
 * Loads Items and show as ListView or GridView
