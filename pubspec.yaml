@@ -1,6 +1,7 @@
 name: flutter_lazy_loading
-description: A starting point for Dart libraries or applications.
+description: Simple package Big usage, flutter lazy loading or load as scroll.
 version: 1.0.0
+homepage: https://nitapps.github.io
 # repository: https://github.com/my_org/my_repo
 
 environment:
