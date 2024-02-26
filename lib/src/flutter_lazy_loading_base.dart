@@ -2,11 +2,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 /// widget that provides lazy loading functionality
+///
+/// [T] is the class type of items
 class LazyLoadingWidget<T> extends StatefulWidget {
   const LazyLoadingWidget(
       {super.key,
       required this.provider,
-      required this.itemBuilder,
+      required this.itemWidget,
       this.gridView = false,
       this.gridViewCrossAxisCount = 2,
       this.noItemsFoundMessage,
@@ -17,10 +19,8 @@ class LazyLoadingWidget<T> extends StatefulWidget {
   /// The provider object which contains all the functionality for lazy loading items
   final LazyLoadingProvider<T> provider;
 
-  /// the builder function which builds each item Ui component and returns item widget
-  ///
-  /// [index] is used to get the item from [provider.items] and build widget with it
-  final Widget Function(BuildContext context, int index) itemBuilder;
+  /// the function which builds each item Ui component and returns item widget
+  final Widget Function(T) itemWidget;
 
   /// the boolean that decides the list of items should be a [GridView] or a [ListView]
   ///
@@ -55,10 +55,10 @@ class LazyLoadingWidget<T> extends StatefulWidget {
   final Widget? loadingWidget;
 
   @override
-  State<LazyLoadingWidget> createState() => _LazyLoadingWidgetState();
+  State<LazyLoadingWidget<T>> createState() => _LazyLoadingWidgetState<T>();
 }
 
-class _LazyLoadingWidgetState extends State<LazyLoadingWidget> {
+class _LazyLoadingWidgetState<T> extends State<LazyLoadingWidget<T>> {
   final _scrollController = ScrollController();
 
   @override
@@ -74,25 +74,34 @@ class _LazyLoadingWidgetState extends State<LazyLoadingWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final gridItems = widget.gridView
+        ? widget.provider.gridViewItems(widget.gridViewCrossAxisCount)
+        : null;
+    final isGridView = widget.gridView && (gridItems?.isNotEmpty ?? false);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         widget.provider.items?.isNotEmpty ?? false
             ? Expanded(
-                child: widget.gridView
-                    ? GridView.builder(
-                  controller: _scrollController,
-                        shrinkWrap: true,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: widget.gridViewCrossAxisCount),
-                        itemCount: widget.provider.items?.length ?? 0,
-                        itemBuilder: widget.itemBuilder,
-                      )
-                    : ListView.builder(
-                  controller: _scrollController,
-                        shrinkWrap: true,
-                        itemCount: widget.provider.items!.length,
-                        itemBuilder: widget.itemBuilder))
+                child: ListView.builder(
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    itemCount: isGridView
+                        ? gridItems!.length
+                        : widget.provider.items!.length,
+                    itemBuilder: (_, index) {
+                      return isGridView
+                          ? IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: gridItems![index]
+                                    .map((e) =>
+                                        Expanded(child: widget.itemWidget(e)))
+                                    .toList(),
+                              ),
+                            )
+                          : widget.itemWidget(widget.provider.items![index]);
+                    }))
             : SizedBox(),
         SizedBox(
           height: 10,
@@ -126,7 +135,6 @@ class _LazyLoadingWidgetState extends State<LazyLoadingWidget> {
 
 /// a [ChangeNotifier] which handles the data and state changes for [LazyLoadingWidget]
 class LazyLoadingProvider<T> extends ChangeNotifier {
-
   /// the response of the function [fetchItems]
   ItemsResponse<T>? _itemsResponse;
 
@@ -184,7 +192,7 @@ class LazyLoadingProvider<T> extends ChangeNotifier {
     final connectivity = await Connectivity().checkConnectivity();
     isInternet = connectivity != ConnectivityResult.none;
     if (isInternet) {
-       _itemsResponse = await fetchItems(page, offset);
+      _itemsResponse = await fetchItems(page, offset);
       if (_itemsResponse != null) {
         if (items != null) {
           items!.addAll(_itemsResponse!.items);
@@ -208,6 +216,21 @@ class LazyLoadingProvider<T> extends ChangeNotifier {
     }
   }
 
+  /// function that gives list chunks for gridview
+  List<List<T>> gridViewItems(int gridCrossAxisCount) {
+    List<List<T>> gridItems = [];
+    if (items?.isNotEmpty ?? false) {
+      for (int i = 0; i <= items!.length; i += gridCrossAxisCount) {
+        gridItems.add(items!.sublist(
+            i,
+            i + gridCrossAxisCount < items!.length
+                ? i + gridCrossAxisCount
+                : (items!.length)));
+      }
+    }
+    return gridItems;
+  }
+
   /// function that checks whether current page is last page or not
   bool isNextPageAvailable() {
     final numberOfPages = _itemsResponse?.totalPages ?? 0;
@@ -220,7 +243,6 @@ class LazyLoadingProvider<T> extends ChangeNotifier {
 /// When we load items for a page, the response contains list of items, that
 /// with that items this [ItemResponse] object is created
 class ItemsResponse<T> {
-
   /// list of items
   List<T> items;
 
