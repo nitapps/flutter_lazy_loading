@@ -56,23 +56,21 @@ Future<ItemsResponse<Books>?> fetchItems(int page, int offset)async{
   ) : null;
 }
 ```
-* For the child parameter add Consumer of LazyLoadingProvider and in th builder return the LazyLoadingWidget
+* For the child parameter add Consumer of LazyLoadingProvider and in the itemWidget function return the LazyLoadingWidget
 ```dart
 Consumer<LazyLoadingProvider<Books>>(
 builder: (context, provider, _){
 return LazyLoadingWidget(
 provider: provider,
-itemBuilder: (context, index){...}
+itemWidget: (book){...}
 );
 }
 )
 ```
-* Last thing, for LazyLoadingWidget in the builder function create the layout of widget for your each Item
+* Last thing, for LazyLoadingWidget in the itemWidget function create the layout of widget for your each Item
 * Which decides how each item should looks
 ```dart
-final book = provider.items?[index];
-return book != null
-? Container(
+return Container(
 decoration: BoxDecoration(
 borderRadius: BorderRadius.circular(24),
 color: Colors.orange.shade200,
@@ -90,7 +88,7 @@ Text(provider.items![index].title)
 ))
 ],
 )
-) : const SizedBox();
+);
 ```
 
 * for full example see the Example Tab
