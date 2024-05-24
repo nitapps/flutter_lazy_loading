@@ -1,11 +1,11 @@
 name: flutter_lazy_loading
 description: Simple package Big usage, flutter lazy loading or load as scroll.
-version: 1.1.1
+version: 1.1.2
 homepage: https://nitapps.github.io
 # repository: https://github.com/my_org/my_repo
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: '>=2.19.6 <4.0.0'
 
 dependencies:
   connectivity_plus: ^6.0.3
