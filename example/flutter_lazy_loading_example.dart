@@ -50,7 +50,9 @@ class HomePage extends StatelessWidget {
             create: (context) => LazyLoadingProvider<Books>(
                 // passing fetchItemsMethod
                 fetchItems: ItemsController().fetchItems,
-                firstPageNumber: 1),
+                firstPageNumber: 1,
+              offset: 9
+            ),
             child: Consumer<LazyLoadingProvider<Books>>(
               builder: (context, provider, _) {
                 return LazyLoadingWidget(
@@ -61,75 +63,103 @@ class HomePage extends StatelessWidget {
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
-                            color: Colors.orange.shade200,
+                            color: Colors.purple.shade200,
                           ),
                           margin: const EdgeInsets.all(8),
                           padding: const EdgeInsets.all(8),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Column(
                             children: [
-                              Icon(
-                                Icons.menu_book_outlined,
-                                color: Colors.blue,
-                                size: 50,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  child: Column(
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    book.title,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                                  // Icon(
+                                  //   Icons.menu_book_outlined,
+                                  //   color: Colors.blue,
+                                  //   size: 50,
+                                  // ),
+                                  // SizedBox(
+                                  //   width: 10,
+                                  // ),
+                                  // Expanded(
+                                  //     child: Column(
+                                  //   children: [
+                                  //     Text(
+                                  //       book.title,
+                                  //       style: TextStyle(
+                                  //           fontSize: 16,
+                                  //           fontWeight: FontWeight.bold),
+                                  //     ),
+                                  //     SizedBox(
+                                  //       height: 5,
+                                  //     ),
+                                  //     Text(
+                                  //       book.description,
+                                  //       style: TextStyle(
+                                  //           fontSize: 14,
+                                  //           color: Colors.black54,
+                                  //           fontWeight: FontWeight.bold),
+                                  //       maxLines: 2,
+                                  //       overflow: TextOverflow.ellipsis,
+                                  //     ),
+                                  //   ],
+                                  // )),
                                   SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    book.description,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.bold),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              )),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Column(
-                                children: [
-                                  Text("Price"),
-                                  SizedBox(
-                                    height: 5,
+                                    width: 10,
                                   ),
                                   Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(book.mrp.toString(),
-                                          style: TextStyle(
-                                              color: Colors.black26,
-                                              fontSize: 16,
-                                              decoration:
-                                                  TextDecoration.lineThrough)),
+                                      Text("Price: "),
                                       SizedBox(
-                                        width: 10,
+                                        height: 20,
                                       ),
-                                      Text(book.mrp.toString(),
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          )),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(book.mrp.toString(),
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(book.mrp.toString(),
+                                              style: TextStyle(
+                                                  color: Colors.black26,
+                                                  fontSize: 16,
+                                                  decoration:
+                                                  TextDecoration.lineThrough)),
+                                        ],
+                                      )
                                     ],
                                   )
                                 ],
-                              )
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                book.title,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                book.description,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
                             ],
                           ));
                     });
