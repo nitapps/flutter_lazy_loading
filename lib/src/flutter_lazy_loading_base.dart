@@ -190,7 +190,7 @@ class LazyLoadingProvider<T> extends ChangeNotifier {
   /// loads items for the [page] with the internet check
   Future<void> loadItems(int page, int offset) async {
     final connectivity = await Connectivity().checkConnectivity();
-    isInternet = connectivity != ConnectivityResult.none;
+    isInternet = connectivity.contains(ConnectivityResult.none);
     if (isInternet) {
       _itemsResponse = await fetchItems(page, offset);
       if (_itemsResponse != null) {

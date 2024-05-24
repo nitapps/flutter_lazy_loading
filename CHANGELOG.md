@@ -1,7 +1,11 @@
-## 1.1.2
+## 1.1.3
+
+- bug fixes
+
+- ## 1.1.2
 
 - updated dependencies
-- 
+
 - ## 1.1.1
 
 - readme.md file updated with latest bug fixes
